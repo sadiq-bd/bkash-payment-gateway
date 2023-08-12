@@ -28,7 +28,10 @@ $reference = $_POST['ref'];
 
 
 $bkash = new BkashAPI;
-if ($resp = $bkash->setGrantToken($token)->createPayment($amount, $invoice, $reference)) {
+if ($resp = $bkash
+    ->setGrantToken($token)
+    ->createPayment($amount, $invoice, $reference)
+   ) {
     if (!empty($resp->jsonObj()->bkashURL)) {
 
 
