@@ -6,7 +6,7 @@ if (basename($_SERVER['SCRIPT_FILENAME']) == 'config.php') {
     exit;
 }
 
-require_once __DIR__ . '/src/BkashAPI.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 
 ########### EXECUTE URL ############

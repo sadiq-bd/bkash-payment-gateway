@@ -1,0 +1,12 @@
+{
+    "name": "sadiq-bd/bkash-payment-gateway",
+    "description": "Bkash Payment Gateway for PHP",
+    "autoload": {
+        "psr-4": {
+            "SADIQ_SOFT\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    }
+}
