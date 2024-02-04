@@ -1,5 +1,5 @@
 <?php
-use SADIQ_SOFT\BkashAPI;
+use Sadiq\BkashAPI;
 require_once __DIR__ . '/config.php';
 session_start();
 

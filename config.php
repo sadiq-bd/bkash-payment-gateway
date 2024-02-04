@@ -1,5 +1,5 @@
 <?php
-use SADIQ_SOFT\BkashAPI;
+use Sadiq\BkashAPI;
 
 if (basename($_SERVER['SCRIPT_FILENAME']) == 'config.php') {
     header('HTTP/1.1 404 Not Found');

@@ -1,9 +1,13 @@
 {
     "name": "sadiq-bd/bkash-payment-gateway",
     "description": "Bkash Payment Gateway for PHP",
+    "license": "MIT",
+    "authors": [
+        "Sadiq<sadiq.developer.bd@gmail.com>"
+    ],
     "autoload": {
         "psr-4": {
-            "SADIQ_SOFT\\": "src/"
+            "Sadiq\\": "src/"
         }
     },
     "require": {

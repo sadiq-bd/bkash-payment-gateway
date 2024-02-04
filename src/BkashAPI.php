@@ -6,7 +6,7 @@
  * @author: Sadiq <sadiq.developer.bd@gmail.com>
  */
 
-namespace SADIQ_SOFT;
+namespace Sadiq;
 
 class BkashAPI {
 
