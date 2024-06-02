@@ -1,0 +1,21 @@
+{
+    "name": "sadiq-bd/bkash-payment-gateway",
+    "description": "Bkash Payment Gateway for PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sadiq Ahmed",
+            "email": "sadiq.developer.bd@gmail.com",
+            "homepage": "https://sadiqbd.netlify.app",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sadiq\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    }
+}
