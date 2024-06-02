@@ -5,13 +5,68 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Successful</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            color: white;
+            overflow: hidden;
+        }
+        .success-container {
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        h4 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes confetti {
+            0% { transform: rotate(0deg) translateX(0); }
+            100% { transform: rotate(360deg) translateX(100vw); }
+        }
+        .confetti {
+            position: absolute;
+            top: -10px;
+            width: 10px;
+            height: 10px;
+            background-color: #FFEB3B;
+            animation: confetti 3s linear infinite;
+            transform-origin: top left;
+        }
+        .confetti:nth-child(odd) {
+            background-color: #FFC107;
+            animation-duration: 2s;
+        }
+    </style>
 </head>
 <body>
-    <br><br>
-    <center>
+    <div class="success-container">
         <h4>Transaction Complete</h4>
-    </center>
+    </div>
+    <script>
+        // Generate confetti
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = `${Math.random() * 100}vw`;
+            confetti.style.animationDelay = `${Math.random() * 3}s`;
+            document.body.appendChild(confetti);
+        }
+    </script>
 </body>
 </html>
