@@ -24,7 +24,11 @@ while (1) {
             
             if (empty($token->getGrantToken())) {
                 header('Content-Type: application/json');
-                print_r($token->response());
+                // print_r($token->response());
+
+                echo json_encode([
+                    'status' => 'payment gateway error'
+                ]);
                 exit;
             }
             
