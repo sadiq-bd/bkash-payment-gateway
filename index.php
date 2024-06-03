@@ -201,7 +201,7 @@ require_once __DIR__ . '/token.php';
         <h2><?= APP_NAME ?></h2>
         <form id="paymentForm" action="./createpayment.php" method="post">
             <div class="input-container">
-                <input type="number" name="amount" id="amountInput" step="1" min="1" placeholder=" " value="<?= isset($_GET['amount']) && filter_var($_GET['amount'], FILTER_VALIDATE_INT) ? $_GET['amount'] : '' ?>" required>
+                <input type="number" name="amount" id="amountInput" step="1" min="1" max="1000000" placeholder=" " value="<?= isset($_GET['amount']) && filter_var($_GET['amount'], FILTER_VALIDATE_INT) ? $_GET['amount'] : '' ?>" required>
                 <label for="amountInput">Amount</label>
             </div>
             <div class="input-container">
