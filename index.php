@@ -19,7 +19,7 @@ require_once __DIR__ . '/token.php';
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 80vh;
             margin: 0;
             background-color: #fff; /* Default background color */
             color: #333; /* Default text color */
