@@ -141,16 +141,17 @@ require_once __DIR__ . '/token.php';
             position: absolute;
             width: 10px;
             height: 10px;
+            border-radius: 50%;
             background-color: #f1c40f;
             animation: confetti 4s linear infinite;
             transform-origin: top left;
         }
         @keyframes confetti {
             0% { 
-                transform: translateY(-100vh) rotate(0deg); 
+                transform: translateY(-100vh); 
             }
             100% { 
-                transform: translateY(100vh) rotate(360deg); 
+                transform: translateY(100vh); 
             }
         }
         .loading-overlay {
