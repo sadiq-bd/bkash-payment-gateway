@@ -24,7 +24,7 @@ $amount = $_POST['amount'];
 
 $invoice = uniqid('INV_');
 
-$reference = $_POST['ref'];
+$reference = strlen($_POST['ref']) > 50 ? substr($_POST['ref'], 0, 50) : $_POST['ref'];
 
 
 $bkash = new BkashAPI;
