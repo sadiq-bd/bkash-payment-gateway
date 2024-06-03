@@ -42,7 +42,7 @@ if ($resp = $bkash
         exit;
     } else {
         // print_r($resp->json());
-        echo json_encode(['status' => $resp->json()->statusMessage]);
+        echo json_encode(['status' => $resp->jsonObj()->statusMessage]);
         die;
     }
 }
