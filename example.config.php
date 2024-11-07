@@ -1,5 +1,6 @@
 <?php
-use Sadiq\BkashAPI;
+use Sadiq\BkashMerchantAPI\BkashMerchantAPI;
+
 if (basename($_SERVER['SCRIPT_FILENAME']) == 'config.php') {
     header('HTTP/1.1 404 Not Found');
     exit;
@@ -11,21 +12,17 @@ define('APP_NAME', 'Payment');
 
 
 ########### EXECUTE URL ############
-BkashAPI::setCallBackUrl('http://' . $_SERVER['HTTP_HOST'] . '/executepayment.php');
+BkashMerchantAPI::setCallBackUrl('http://' . $_SERVER['HTTP_HOST'] . '/executepayment.php');
 
 
-BkashAPI::setAppKey('app_key_here');
-BkashAPI::setAppSecret('app_secret_here');
-BkashAPI::setUsername('username_here');
-BkashAPI::setPassword('password_here');
+BkashMerchantAPI::setAppKey('app_key_here');
+BkashMerchantAPI::setAppSecret('app_secret_here');
+BkashMerchantAPI::setUsername('username_here');
+BkashMerchantAPI::setPassword('password_here');
 
 
-########### SANDBOX #################
-BkashAPI::setApiBaseURL('https://tokenized.sandbox.bka.sh/v1.2.0-beta/tokenized/');
-
-
-########### PRODUCTION ##############
-# BkashAPI::setApiBaseURL('https://tokenized.pay.bka.sh/v1.2.0-beta/tokenized/');
+########### ENABLES SANDBOX #################
+BkashMerchantAPI::sandBoxMode(true);
 
 
 

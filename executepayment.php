@@ -1,10 +1,10 @@
 <?php
-use Sadiq\BkashAPI;
+use Sadiq\BkashMerchantAPI\BkashMerchantAPI;
+use Sadiq\BkashMerchantAPI\Exception\BkashMerchantAPIException;
+
 require_once __DIR__ . '/config.php';
 session_start();
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
+
 // token genarate & refresh
 require_once __DIR__. '/token.php';
 
@@ -26,31 +26,39 @@ $paymentID = $_GET['paymentID'];
 $status = $_GET['status'];
 
 
-$bkash = new BkashAPI;
-if (empty((
-            $resp = $bkash
-               ->setGrantToken($token)
-               ->executePayment($paymentID)
-          )->jsonObj()->errorCode)
-   ) {
-    
-    // $query = $bkash->queryPayment($paymentID);
+try {
 
-    // log execute payment resp
-    prependFileLog(log_file, "\n\n- Execute Payment\n{$resp->response()}\n\n");
+    $bkash = new BkashMerchantAPI;
+    $bkash->setGrantToken($token);
 
+    if (empty(
+        ($resp = $bkash->executePayment($paymentID))->parse()->errorCode
+    )) {
+        
+        // $query = $bkash->queryPayment($paymentID);
 
-    // log query payment resp
-    // prependFileLog(log_file, "\n\n- Query Payment\n{$query->response()}\n\n");
+        // log execute payment resp
+        prependFileLog(log_file, "\n\n- Execute Payment\n{$resp->getResponse()}\n\n");
 
 
-    if (@$resp->jsonObj()->transactionStatus == 'Completed') {
-        header('Location: /success.html');
-        exit;
+        // log query payment resp
+        // prependFileLog(log_file, "\n\n- Query Payment\n{$query->getResponse()}\n\n");
+
+
+        if ($bkash->isPaymentSuccess($paymentID, $_SESSION['invoice'])) {
+
+            unset($_SESSION['invoice']);
+
+            header('Location: /success.html');
+            exit;
+
+        }
+
     }
 
+    echo json_encode(['status' => 'error']);
+
+
+} catch (BkashMerchantAPIException $e) {
+    die ($e->getMessage());
 }
-
-echo json_encode(['status' => 'error']);
-
-

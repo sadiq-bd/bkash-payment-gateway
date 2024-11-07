@@ -2,14 +2,16 @@
 /**
  * @name: BkashAPI
  * @type: API Handler
- * @namespace: SADIQ_SOFT
- * @author: Sadiq <sadiq.developer.bd@gmail.com>
+ * @namespace: Sadiq\BkashMerchantAPI
+ * @author: Sadiq <sadiq.dev.bd@gmail.com>
  */
 
-namespace Sadiq;
+namespace Sadiq\BkashMerchantAPI;
+use Sadiq\BkashMerchantAPI\Exception\BkashMerchantAPIException;
 
-class BkashAPI {
+class BkashMerchantAPI {
 
+    private static $isSandBox = false;
     private static $baseURL = '';
     private static $tokenURL = '';
     private static $createURL = '';
@@ -28,13 +30,17 @@ class BkashAPI {
     private static $password = '';
 
     private $grantToken = '';
-    private $fetchResponse = '';
-    private $errorInfo = '';
+
+    const PRODUCTION_URL = 'https://tokenized.pay.bka.sh/v1.2.0-beta/tokenized/';
+    const SANDBOX_URL = 'https://tokenized.sandbox.bka.sh/v1.2.0-beta/tokenized/';
 
     public function __construct() {
 
-        # self::setApiBaseURL('https://tokenized.sandbox.bka.sh/v1.2.0-beta/tokenized/');   # SANDBOX
-        # self::setApiBaseURL('https://tokenized.pay.bka.sh/v1.2.0-beta/tokenized/');       # PRODUCTION
+        if (self::$isSandBox) {
+            self::setApiBaseURL(self::SANDBOX_URL);
+        } else {
+            self::setApiBaseURL(self::PRODUCTION_URL);      // default
+        }    
         
         self::setTokenGrantURL('/checkout/token/grant');
         self::setRefreshTokenURL('/checkout/token/refresh');
@@ -127,7 +133,8 @@ class BkashAPI {
     }
 
     public function grantToken() {
-        $token = $this->fetch(
+
+        $tokenRequest = new BkashMerchantAPIRequest(
             self::$tokenURL, 
             array(
                 'username: ' . self::$username,
@@ -137,15 +144,20 @@ class BkashAPI {
                 'app_secret' => self::$app_secret
             )
         );
-        if (!empty($token->jsonObj()->id_token)) {
-            $this->setGrantToken($token->jsonObj()->id_token);
+
+        $response = new BkashMerchantAPIResponse($tokenRequest);
+
+        if (!empty($response->parse()->id_token)) {
+            $this->setGrantToken($response->parse()->id_token);
         }
-        return $this;
+
+        return $response;
     }
 
     
     public function refreshToken(string $refrshTokenValue) {
-        $token = $this->fetch(
+
+        $tokenRequest = new BkashMerchantAPIRequest(
             self::$refreshTokenURL, 
             array(
                 'username: ' . self::$username,
@@ -156,15 +168,20 @@ class BkashAPI {
                 'refresh_token' => $refrshTokenValue
             )
         );
-        if (!empty($token->jsonObj()->id_token)) {
-            $this->setGrantToken($token->jsonObj()->id_token);
+
+        $response = new BkashMerchantAPIResponse($tokenRequest);
+
+        if (!empty($response->parse()->id_token)) {
+            $this->setGrantToken($response->parse()->id_token);
         }
-        return $this;
+
+        return $response;
     }
 
 
     public function createPayment(string|int $amount, string $invoice, string $ref, string $intent = 'sale') {
-        return $this->fetch(
+        
+        $createRequest = new BkashMerchantAPIRequest(
             self::$createURL, 
             $this->createAuthHeaders(), 
             array(
@@ -177,32 +194,44 @@ class BkashAPI {
                 'intent' => $intent
             )
         );
+
+        return new BkashMerchantAPIResponse($createRequest);
+
     }
 
     public function executePayment(string $paymentID) {
-        return $this->fetch(
+        
+        $executeRequest = new BkashMerchantAPIRequest(
             self::$executeURL, 
             $this->createAuthHeaders(), 
             array(
                 'paymentID' => $paymentID
             )
         );
+
+        return new BkashMerchantAPIResponse($executeRequest);
+
     }
 
     
     public function queryPayment(string $paymentID) {
-        return $this->fetch(
+        
+        $queryRequest = new BkashMerchantAPIRequest(
             self::$queryURL, 
             $this->createAuthHeaders(), 
             array(
                 'paymentID' => $paymentID
             )
         );
+
+        return new BkashMerchantAPIResponse($queryRequest);
+
     }
 
 
     public function refundPayment(string $paymentID, string|int $amount, string $trxID, string $sku, string $reason) {
-        return $this->fetch(
+        
+        $refundRequest = new BkashMerchantAPIRequest(
             self::$refundURL, 
             $this->createAuthHeaders(), 
             array(
@@ -213,10 +242,14 @@ class BkashAPI {
                 'reason' => $reason
             )
         );
+
+        return new BkashMerchantAPIResponse($refundRequest);
+
     }
 
     public function refundStatus(string $paymentID, string $trxID) {
-        return $this->fetch(
+        
+        $refundStatusRequest = new BkashMerchantAPIRequest(
             self::$refundStatusURL, 
             $this->createAuthHeaders(), 
             array(
@@ -224,28 +257,30 @@ class BkashAPI {
                 'trxID' => $trxID
             )
         );
+
+        return new BkashMerchantAPIResponse($refundStatusRequest);
+
     }
 
     public function searchTransaction(string $trxID) {
-        return $this->fetch(
+        
+        $searchRequest = new BkashMerchantAPIRequest(
             self::$searchURL, 
             $this->createAuthHeaders(), 
             array(
                 'trxID' => $trxID
             )
         );
+
+        return new BkashMerchantAPIResponse($searchRequest);
     }
 
-    public function response() {
-        return $this->fetchResponse;
-    }
+    public function isPaymentSuccess(string $paymentID, string $invoice) {
 
-    public function json() {
-        return @json_decode($this->response(), true);
-    }
+        $executeResponse = $this->executePayment($paymentID)->parse();
 
-    public function jsonObj() {
-        return @json_decode($this->response(), null);
+        return strtolower($executeResponse->transactionStatus) == 'completed' && $executeResponse->merchantInvoiceNumber == $invoice;
+        
     }
 
     private function createAuthHeaders() {
@@ -255,33 +290,9 @@ class BkashAPI {
         );
     }
 
-    private function fetch(string $url, array $headers = [], array $postData = []) {
-        
-        $postHeaders = array_merge(array(
-            'Content-Type: application/json'                                                       
-        ), $headers);
-        
-        $curl = curl_init($url);
-        curl_setopt($curl,CURLOPT_HTTPHEADER, $postHeaders);
-        curl_setopt($curl,CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-        if (!empty($postData)) curl_setopt($curl,CURLOPT_POSTFIELDS, json_encode($postData));
-        curl_setopt($curl,CURLOPT_FOLLOWLOCATION, 1);
-        $result = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-        if (strlen($err) > 1) {
-            $this->errorInfo = $err;
-        }
-        $this->fetchResponse = $result;
-
-        return $this;
+    public static function sandBoxMode(bool $sandbox = true) {
+        self::$isSandBox = $sandbox;
     }
-
-    public function getErrorInfo() {
-        return $this->errorInfo;
-    }
-
 
 }
 

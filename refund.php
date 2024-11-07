@@ -1,5 +1,6 @@
 <?php
-use Sadiq\BkashAPI;
+use Sadiq\BkashMerchantAPI\BkashMerchantAPI;
+
 require_once __DIR__ . '/config.php';
 session_start();
 
@@ -17,10 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $bkash = new BkashAPI;
-    if ($refund = $bkash
-        ->setGrantToken($_SESSION['token'])
-        ->refundPayment(
+    $bkash = new BkashMerchantAPI;
+    $bkash->setGrantToken($_SESSION['token']);
+    if ($refund = $bkash->refundPayment(
             $_POST['paymentID'],
             $_POST['amount'],
             $_POST['trxID'],
@@ -31,10 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         
         // log refund
-        prependFileLog(log_file, "\n\n- Refund Payment\n{$refund->response()}\n\n");
+        prependFileLog(log_file, "\n\n- Refund Payment\n{$refund->getResponse()}\n\n");
 
         header('Content-type: application/json');
-        exit($refund->response());
+        exit($refund->getResponse());
         
     }
 }

@@ -1,5 +1,5 @@
 <?php
-use Sadiq\BkashAPI;
+use Sadiq\BkashMerchantAPI\BkashMerchantAPI;
 
 if (basename($_SERVER['SCRIPT_FILENAME']) == 'token.php') {
     header('HTTP/1.1 404 Not Found');
@@ -14,28 +14,28 @@ if (session_status() === PHP_SESSION_NONE) {
 while (1) {
     
     if (empty($_SESSION['token'])) {
-        $bkash = new BkashAPI;
+        $bkash = new BkashMerchantAPI;
         if (empty($_SESSION['token_refresh'])) {
             $token = $bkash->grantToken();
         } else {
             $token = $bkash->refreshToken($_SESSION['token_refresh']);
         }
-        if (strlen($token->getErrorInfo()) < 1) {
+        
             
-            if (empty($token->getGrantToken())) {
-                header('Content-Type: application/json');
-                // print_r($token->response());
+        if (empty($bkash->getGrantToken())) {
+            header('Content-Type: application/json');
+            // print_r($token->getResponse());
 
-                echo json_encode([
-                    'status' => 'payment gateway error'
-                ]);
-                exit;
-            }
-            
-            $_SESSION['token'] = $token->getGrantToken();
-            $_SESSION['token_refresh'] = $token->jsonObj()->refresh_token;
-            $_SESSION['token_expiration'] = time() + $token->jsonObj()->expires_in;
+            echo json_encode([
+                'status' => 'payment gateway error'
+            ]);
+            exit;
         }
+            
+        $_SESSION['token'] = $bkash->getGrantToken();
+        $_SESSION['token_refresh'] = $token->parse()->refresh_token;
+        $_SESSION['token_expiration'] = time() + $token->parse()->expires_in;
+        
     }
 
     // refresh if token expired
