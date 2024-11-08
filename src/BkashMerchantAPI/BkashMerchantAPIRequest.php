@@ -15,7 +15,7 @@ class BkashMerchantAPIRequest {
 
     protected $requestHeaders = [];
 
-    protected $payloads = [];
+    protected $payloads = '';
 
     protected $errorInfo = '';
 
@@ -27,7 +27,7 @@ class BkashMerchantAPIRequest {
 
         $this->setURI($uri);
         $this->setRequestHeaders($headers);
-        $this->setPayloads($payloads);
+        $this->setPayloads($this->jsonPayload($payloads));
     
         // additional header
         $this->injectHeader('Content-Type: application/json');
@@ -47,7 +47,7 @@ class BkashMerchantAPIRequest {
         $this->uri = $uri;
     }
 
-    public function setPayloads(array $payloads) {
+    public function setPayloads($payloads) {
         $this->payloads = $payloads;
     }
 

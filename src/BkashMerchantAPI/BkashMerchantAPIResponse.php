@@ -22,21 +22,24 @@ class BkashMerchantAPIResponse {
         }
     }
 
-    public function setResponse(string $response) {
+    public function setResponse(BkashMerchantAPIRequest|string $response) {
         $this->response = $response;
     }
 
     public function getResponse() {
-        return $this->response;
+        
+        $response = $this->response;
+        
+        if ($this->response instanceof BkashMerchantAPIRequest) {
+            $response = $this->response->getResponseBody();
+        }
+        
+        return $response;
     }
 
     public function parse() {
         
-        $response = $this->response;
-
-        if ($response instanceof BkashMerchantAPIRequest) {
-            $response = $response->getResponseBody();
-        }
+        $response = $this->getResponse();
 
         $this->json = json_decode($response, false);
 

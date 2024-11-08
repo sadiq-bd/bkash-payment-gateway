@@ -275,9 +275,19 @@ class BkashMerchantAPI {
         return new BkashMerchantAPIResponse($searchRequest);
     }
 
-    public function isPaymentSuccess(string $paymentID, string $invoice) {
+    public function redirectToPayment(BkashMerchantAPIResponse $createResponse) {
 
-        $executeResponse = $this->executePayment($paymentID)->parse();
+        $createResponse = $createResponse->parse();
+
+        header('HTTP/1.1 302 Found');
+        header('Location: ' . $createResponse->bkashURL);
+
+        exit();
+    }
+
+    public function isPaymentSuccess(BkashMerchantAPIResponse $executeResponse, string $invoice) {
+
+        $executeResponse = $executeResponse->parse();
 
         return strtolower($executeResponse->transactionStatus) == 'completed' && $executeResponse->merchantInvoiceNumber == $invoice;
         

@@ -45,7 +45,7 @@ try {
         // prependFileLog(log_file, "\n\n- Query Payment\n{$query->getResponse()}\n\n");
 
 
-        if ($bkash->isPaymentSuccess($paymentID, $_SESSION['invoice'])) {
+        if ($bkash->isPaymentSuccess($resp, $_SESSION['invoice'])) {
 
             unset($_SESSION['invoice']);
 

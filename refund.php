@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         prependFileLog(log_file, "\n\n- Refund Payment\n{$refund->getResponse()}\n\n");
 
         header('Content-type: application/json');
-        exit($refund->getResponse());
+        die($refund->getResponse());
         
     }
 }

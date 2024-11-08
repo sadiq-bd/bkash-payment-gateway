@@ -35,21 +35,15 @@ try {
     $bkash = new BkashMerchantAPI;
     $bkash->setGrantToken($token);
     if ($resp = $bkash->createPayment($amount, $invoice, $reference)) {
-        if (!empty($resp->parse()->bkashURL)) {
+        
+        // log create payment resp
+        prependFileLog(log_file, "\n\n- Create Payment\n{$resp->getResponse()}\n\n");
 
-
-            // log create payment resp
-            prependFileLog(log_file, "\n\n- Create Payment\n{$resp->getResponse()}\n\n");
-
-            header('Location: ' . $resp->parse()->bkashURL);
-            exit;
-        } else {
-            // print_r($resp->json());
-            echo json_encode(['status' => $resp->parse()->statusMessage]);
-            die;
-        }
+        $bkash->redirectToPayment($resp);  
+        
     }
 
 } catch (BkashMerchantAPIException $e) {
     die ($e->getMessage());
 }
+
