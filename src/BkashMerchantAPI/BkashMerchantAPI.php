@@ -289,7 +289,7 @@ class BkashMerchantAPI {
 
         $executeResponse = $executeResponse->parse();
 
-        return strtolower($executeResponse->transactionStatus) == 'completed' && $executeResponse->merchantInvoiceNumber == $invoice;
+        return !empty($executeResponse->transactionStatus) && strtolower($executeResponse->transactionStatus) == 'completed' && $executeResponse->merchantInvoiceNumber == $invoice;
         
     }
 
