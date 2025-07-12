@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="https://api.sadiq.us.to/app/github/repo/bkash-payment-gateway/views" alt="View Counter" />
+  <img src="https://api.sadiq.workers.dev/app/github/repo/bkash-payment-gateway/views" alt="View Counter" />
 </p>
 
 # bKash Payment Gateway PHP
