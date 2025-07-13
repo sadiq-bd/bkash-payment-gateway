@@ -139,6 +139,6 @@ For issues and feature requests, please use the [GitHub Issues](https://github.c
 
 ## More Information
 
-- [bKash Official API Documentation](https://developer.bkash.com/)
+- [bKash Official API Documentation](https://developer.bka.sh/)
 - [Packagist Package](https://packagist.org/packages/sadiq-bd/bkash-payment-gateway)
 - [Browse All Files in This Repo](https://github.com/sadiq-bd/bkash-payment-gateway/search)
